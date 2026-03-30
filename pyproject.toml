@@ -15,6 +15,9 @@ dependencies = [
 testmailbox = "run:main"
 testmailbox-mcp = "mcp_server:main"
 
+[tool.setuptools]
+py-modules = ["core", "db", "mcp_server", "run", "server", "smtp_server"]
+
 [build-system]
 requires = ["setuptools>=75.0"]
 build-backend = "setuptools.build_meta"

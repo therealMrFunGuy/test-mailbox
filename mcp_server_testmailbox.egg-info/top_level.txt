@@ -1,0 +1,6 @@
+core
+db
+mcp_server
+run
+server
+smtp_server

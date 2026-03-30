@@ -1,0 +1,15 @@
+LICENSE
+README.md
+core.py
+db.py
+mcp_server.py
+pyproject.toml
+run.py
+server.py
+smtp_server.py
+mcp_server_testmailbox.egg-info/PKG-INFO
+mcp_server_testmailbox.egg-info/SOURCES.txt
+mcp_server_testmailbox.egg-info/dependency_links.txt
+mcp_server_testmailbox.egg-info/entry_points.txt
+mcp_server_testmailbox.egg-info/requires.txt
+mcp_server_testmailbox.egg-info/top_level.txt

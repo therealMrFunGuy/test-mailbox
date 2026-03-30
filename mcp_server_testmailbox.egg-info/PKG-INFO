@@ -1,0 +1,12 @@
+Metadata-Version: 2.4
+Name: mcp-server-testmailbox
+Version: 1.0.0
+Summary: Disposable email inbox service for testing — REST API + MCP server
+Requires-Python: >=3.11
+License-File: LICENSE
+Requires-Dist: aiosmtpd>=1.4.6
+Requires-Dist: fastapi>=0.115.0
+Requires-Dist: uvicorn[standard]>=0.32.0
+Requires-Dist: mcp[cli]>=1.0.0
+Requires-Dist: beautifulsoup4>=4.12.0
+Dynamic: license-file

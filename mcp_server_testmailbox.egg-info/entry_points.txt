@@ -1,0 +1,3 @@
+[console_scripts]
+testmailbox = run:main
+testmailbox-mcp = mcp_server:main
