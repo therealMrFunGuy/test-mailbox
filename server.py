@@ -6,15 +6,17 @@ import os
 import re
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 
 import core
 import db
+from auth_client import require_auth
 
 logger = logging.getLogger("testmailbox.api")
 
+AUTH_SERVICE_URL = os.environ.get("AUTH_SERVICE_URL", "http://localhost:8499")
 CLEANUP_INTERVAL = int(os.environ.get("CLEANUP_INTERVAL_SECONDS", "300"))
 
 
@@ -358,14 +360,14 @@ async def health():
 
 
 @app.post("/inboxes")
-async def create_inbox():
+async def create_inbox(auth: dict = Depends(require_auth)):
     """Create a new disposable inbox."""
     inbox = core.create_inbox()
     return inbox
 
 
 @app.get("/inboxes/{inbox_id}")
-async def get_inbox(inbox_id: str):
+async def get_inbox(inbox_id: str, auth: dict = Depends(require_auth)):
     """Get inbox details."""
     inbox = core.get_inbox(inbox_id)
     if not inbox:
@@ -374,7 +376,7 @@ async def get_inbox(inbox_id: str):
 
 
 @app.get("/inboxes/{inbox_id}/messages")
-async def list_messages(inbox_id: str):
+async def list_messages(inbox_id: str, auth: dict = Depends(require_auth)):
     """List all messages in an inbox."""
     inbox = core.get_inbox(inbox_id)
     if not inbox:
@@ -384,7 +386,7 @@ async def list_messages(inbox_id: str):
 
 
 @app.get("/inboxes/{inbox_id}/messages/latest")
-async def get_latest_message(inbox_id: str):
+async def get_latest_message(inbox_id: str, auth: dict = Depends(require_auth)):
     """Get the most recent message in an inbox."""
     inbox = core.get_inbox(inbox_id)
     if not inbox:
@@ -399,7 +401,7 @@ async def get_latest_message(inbox_id: str):
 
 
 @app.get("/inboxes/{inbox_id}/messages/{msg_id}")
-async def get_message(inbox_id: str, msg_id: str):
+async def get_message(inbox_id: str, msg_id: str, auth: dict = Depends(require_auth)):
     """Get a full message by ID (headers, body, attachments)."""
     inbox = core.get_inbox(inbox_id)
     if not inbox:
@@ -418,6 +420,7 @@ async def wait_for_message(
     inbox_id: str,
     timeout: int = Query(default=30, ge=1, le=120, description="Timeout in seconds"),
     match: str = Query(default=None, description="Regex pattern to match subject"),
+    auth: dict = Depends(require_auth),
 ):
     """Long-poll for a message matching an optional pattern."""
     inbox = core.get_inbox(inbox_id)
@@ -446,7 +449,7 @@ async def wait_for_message(
 
 
 @app.get("/inboxes/{inbox_id}/links")
-async def get_email_links(inbox_id: str):
+async def get_email_links(inbox_id: str, auth: dict = Depends(require_auth)):
     """Extract all links from the latest email in an inbox."""
     inbox = core.get_inbox(inbox_id)
     if not inbox:
@@ -456,7 +459,7 @@ async def get_email_links(inbox_id: str):
 
 
 @app.delete("/inboxes/{inbox_id}")
-async def delete_inbox(inbox_id: str):
+async def delete_inbox(inbox_id: str, auth: dict = Depends(require_auth)):
     """Delete an inbox and all its messages."""
     deleted = core.delete_inbox(inbox_id)
     if not deleted:
